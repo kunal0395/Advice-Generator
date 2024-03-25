@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advice Generator</title>
+    <link rel="stylesheet" href="assets/index-f7620093.css">
+    <style>
+        #container {
+            width: 410px; 
+            height: 240px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 1rem;
+        }
+        #Btn {
+            position: absolute;
+            bottom: -30px;
+            box-shadow: 0 0 10px 0 rgba(79, 209, 197, 0.8);
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out; 
+        }
+        #Btn:hover {
+            transform: translateY(-3px); 
+            box-shadow: 0 0 20px 0 rgba(79, 209, 197, 0.8); 
+        }
+        @keyframes rollAnimation {
+            0% { transform: rotate(0deg); }
+            20% { transform: rotate(-90deg); }
+            40% { transform: rotate(180deg); }
+            60% { transform: rotate(-180deg); }
+            80% { transform: rotate(90deg); }
+            100% { transform: rotate(0deg); }
+        }
+        .roll {
+            animation: rollAnimation 1s ease-in-out;
+        }
+        .text-sm {
+            font-size: 0.875rem; 
+        }
+        .text-lg {
+            font-size: 1rem;
+        }
+    </style>
+  
+</head>
+<body class="bg-gray-700 min-h-screen flex flex-col items-center justify-center">
+    <div id="container" class="bg-gray-800 rounded-lg text-center relative">
+        <p class="text-green-400 text-base mb-2">ADVICE #<span id="adviceNumber">0</span></p>
+        <div>
+            <p id="quote" class="text-white text-2xl italic mt-3"></p>
+        </div>
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-[90%] top-[190px] absolute" viewBox="0 0 444 16">
+            <g fill="none" fill-rule="evenodd">
+                <path fill="#4F5D74" d="M0 8h196v1H0zM248 8h196v1H248z"/>
+                <g transform="translate(212)" fill="#CEE3E9">
+                    <rect width="6" height="16" rx="3"/>
+                    <rect x="14" width="6" height="16" rx="3"/>
+                </g>
+            </g>
+        </svg>
+        <button id="Btn" class="mt-4 bg-cyan-400 pl-3 pr-0 rounded-full text-white hover:text-black w-14 h-14">
+            <img src="assets/icon-dice-60cce3a8.svg" alt="Dice Icon" class="h-8 w-8">
+        </button>        
+    </div>
+
+    <script>
+        let adviceCount = 0;
+
+        function fetchNewQuote() {
+            fetch('https://api.adviceslip.com/advice')
+                .then(res => res.json())
+                .then(data => {
+                    const advice = data.slip.advice;
+                    adviceCount++;
+                    document.getElementById('adviceNumber').innerText = adviceCount;
+                    document.getElementById('quote').innerText = `"${advice}"`;
+                })
+                .catch(error => console.error('Error fetching advice:', error));
+        }
+
+        document.getElementById('Btn').addEventListener('click', function() {
+            this.classList.add('roll'); 
+            setTimeout(() => {
+                fetchNewQuote();
+                this.classList.remove('roll'); 
+            }, 1000);
+        });
+
+        fetchNewQuote();
+    </script>
+</body>
+</html>
